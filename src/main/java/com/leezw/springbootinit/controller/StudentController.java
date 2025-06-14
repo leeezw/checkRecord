@@ -48,26 +48,14 @@ public class StudentController {
      * 创建用户文件
      *
      * @param studentAddRequest
-     * @param request
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addStudent(@RequestBody StudentAddRequest studentAddRequest, HttpServletRequest request) {
+    public BaseResponse addStudent(@RequestBody Student studentAddRequest,HttpServletRequest request) {
         ThrowUtils.throwIf(studentAddRequest == null, ErrorCode.PARAMS_ERROR);
-        // todo 在此处将实体类和 DTO 进行转换
-        Student student = new Student();
-        BeanUtils.copyProperties(studentAddRequest, student);
-        // 数据校验
-        studentService.validStudent(student, true);
-        // todo 填充默认值
-        User loginUser = userService.getLoginUser(request);
-        student.setUserid(String.valueOf(loginUser.getId()));
-        // 写入数据库
-        boolean result = studentService.save(student);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
-        // 返回新写入的数据 id
-        long newStudentId = student.getId();
-        return ResultUtils.success(newStudentId);
+        userService.getLoginUser(request);
+        studentService.addStudent(studentAddRequest);
+        return ResultUtils.success();
     }
 
     /**

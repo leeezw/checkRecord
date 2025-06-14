@@ -51,4 +51,7 @@ public interface StudentService extends IService<Student> {
      * @return
      */
     Page<StudentVO> getStudentVOPage(Page<Student> studentPage, HttpServletRequest request);
+
+    void addStudent(Student studentAddRequest);
+
 }

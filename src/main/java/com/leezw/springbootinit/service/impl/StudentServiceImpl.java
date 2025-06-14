@@ -1,11 +1,15 @@
 package com.leezw.springbootinit.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import java.time.LocalDateTime;
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leezw.springbootinit.common.ErrorCode;
 import com.leezw.springbootinit.constant.CommonConstant;
+import com.leezw.springbootinit.exception.BusinessException;
 import com.leezw.springbootinit.exception.ThrowUtils;
 import com.leezw.springbootinit.mapper.StudentMapper;
 import com.leezw.springbootinit.model.dto.student.StudentQueryRequest;
@@ -23,10 +27,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +42,9 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private StudentMapper studentMapper;
 
     /**
      * 校验数据
@@ -183,6 +187,16 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
         studentVOPage.setRecords(studentVOList);
         return studentVOPage;
+    }
+
+    @Override
+    public void addStudent(Student studentAddRequest) {
+        Student exist = studentMapper.selectOne(new LambdaQueryWrapper<Student>().eq(Student::getUsername, studentAddRequest.getUsername()));
+        if(Objects.nonNull(exist)){
+            throw new BusinessException(ErrorCode.STUDENT_IS_EXIST);
+        }
+        studentAddRequest.setCreatetime(LocalDateTime.now());
+        studentMapper.insert(studentAddRequest);
     }
 
 }

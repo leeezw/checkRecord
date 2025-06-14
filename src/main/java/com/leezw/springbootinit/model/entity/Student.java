@@ -1,6 +1,10 @@
 package com.leezw.springbootinit.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.io.Serializable;
@@ -86,12 +90,14 @@ public class Student implements Serializable {
     /**
     * 出生日期
     */
-    private String birthday;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private LocalDate birthday;
 
     /**
     * 检查日期
     */
-    private String checkday;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private LocalDate checkday;
 
     /**
     * 用户简介
@@ -101,12 +107,14 @@ public class Student implements Serializable {
     /**
     * 创建时间
     */
-    private Date createtime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime createtime;
 
     /**
     * 更新时间
     */
-    private Date updatetime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private LocalDateTime updatetime;
 
     /**
     * 是否删除
