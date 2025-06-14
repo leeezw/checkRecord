@@ -87,33 +87,34 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         // todo 从对象中取值
         Long id = studentQueryRequest.getId();
-        Long notId = studentQueryRequest.getNotId();
-        String title = studentQueryRequest.getTitle();
-        String content = studentQueryRequest.getContent();
         String searchText = studentQueryRequest.getSearchText();
         String sortField = studentQueryRequest.getSortField();
         String sortOrder = studentQueryRequest.getSortOrder();
-        List<String> tagList = studentQueryRequest.getTags();
-        Long userId = studentQueryRequest.getUserId();
+        String userId =studentQueryRequest.getUserid();
         // todo 补充需要的查询条件
         // 从多字段中搜索
-        if (StringUtils.isNotBlank(searchText)) {
-            // 需要拼接查询条件
-            queryWrapper.and(qw -> qw.like("title", searchText).or().like("content", searchText));
-        }
-        // 模糊查询
-        queryWrapper.like(StringUtils.isNotBlank(title), "title", title);
-        queryWrapper.like(StringUtils.isNotBlank(content), "content", content);
-        // JSON 数组查询
-        if (CollUtil.isNotEmpty(tagList)) {
-            for (String tag : tagList) {
-                queryWrapper.like("tags", "\"" + tag + "\"");
-            }
+        if (StringUtils.isNotBlank(studentQueryRequest.getUsername())
+                || StringUtils.isNotBlank(studentQueryRequest.getUserphone())
+                || StringUtils.isNotBlank(studentQueryRequest.getStuid())
+                || StringUtils.isNotBlank(userId)) {
+
+            queryWrapper.and(qw -> {
+                if (StringUtils.isNotBlank(studentQueryRequest.getUsername())) {
+                    qw.like("userName", studentQueryRequest.getUsername());
+                }
+                if (StringUtils.isNotBlank(studentQueryRequest.getUserphone())) {
+                    qw.or().like("userPhone", studentQueryRequest.getUserphone());
+                }
+                if (StringUtils.isNotBlank(studentQueryRequest.getStuid())) {
+                    qw.or().like("stuId", studentQueryRequest.getStuid());
+                }
+                if (StringUtils.isNotBlank(userId)) {
+                    qw.or().like("userId", userId);
+                }
+            });
         }
         // 精确查询
-        queryWrapper.ne(ObjectUtils.isNotEmpty(notId), "id", notId);
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
-        queryWrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
         // 排序规则
         queryWrapper.orderBy(SqlUtils.validSortField(sortField),
                 sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
