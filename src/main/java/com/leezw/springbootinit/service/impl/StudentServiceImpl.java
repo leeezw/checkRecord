@@ -88,11 +88,26 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         String userId =studentQueryRequest.getUserid();
         // todo 补充需要的查询条件
         // 从多字段中搜索
-        if (StringUtils.isNotBlank(studentQueryRequest.getUsername()) || StringUtils.isNotBlank( studentQueryRequest.getUserphone()) || StringUtils.isNotBlank( studentQueryRequest.getStuid())|| StringUtils.isNotBlank(userId)) {
-            // 需要拼接查询条件
-            queryWrapper.and(qw -> qw.like("userName", studentQueryRequest.getUsername()).or().like("userPhone", studentQueryRequest.getUserphone()).or().like("stuId", studentQueryRequest.getStuid()).or().like("userId", userId));
-        }
+        if (StringUtils.isNotBlank(studentQueryRequest.getUsername())
+                || StringUtils.isNotBlank(studentQueryRequest.getUserphone())
+                || StringUtils.isNotBlank(studentQueryRequest.getStuid())
+                || StringUtils.isNotBlank(userId)) {
 
+            queryWrapper.and(qw -> {
+                if (StringUtils.isNotBlank(studentQueryRequest.getUsername())) {
+                    qw.like("userName", studentQueryRequest.getUsername());
+                }
+                if (StringUtils.isNotBlank(studentQueryRequest.getUserphone())) {
+                    qw.or().like("userPhone", studentQueryRequest.getUserphone());
+                }
+                if (StringUtils.isNotBlank(studentQueryRequest.getStuid())) {
+                    qw.or().like("stuId", studentQueryRequest.getStuid());
+                }
+                if (StringUtils.isNotBlank(userId)) {
+                    qw.or().like("userId", userId);
+                }
+            });
+        }
         // 精确查询
         queryWrapper.eq(ObjectUtils.isNotEmpty(id), "id", id);
         // 排序规则
