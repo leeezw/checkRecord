@@ -21,9 +21,11 @@ import com.leezw.springbootinit.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * 用户文件接口
@@ -218,4 +220,10 @@ public class StudentController {
     }
 
     // endregion
+
+    @PostMapping("/import")
+    public BaseResponse<?> importExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        studentService.importExcel(file);
+        return ResultUtils.success("导入成功");
+    }
 }

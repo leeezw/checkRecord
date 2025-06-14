@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.leezw.springbootinit.model.dto.student.StudentQueryRequest;
 import com.leezw.springbootinit.model.entity.Student;
 import com.leezw.springbootinit.model.vo.StudentVO;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * 用户文件服务
@@ -54,4 +56,5 @@ public interface StudentService extends IService<Student> {
 
     void addStudent(Student studentAddRequest);
 
+    void importExcel(MultipartFile file) throws IOException;
 }

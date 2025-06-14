@@ -1,13 +1,17 @@
 package com.leezw.springbootinit.service.impl;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import cn.hutool.core.collection.CollUtil;
+import com.alibaba.excel.EasyExcel;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leezw.springbootinit.common.ErrorCode;
 import com.leezw.springbootinit.constant.CommonConstant;
+import com.leezw.springbootinit.excel.ExcelListener.StudentExcelListener;
+import com.leezw.springbootinit.excel.StudentExcel;
 import com.leezw.springbootinit.exception.BusinessException;
 import com.leezw.springbootinit.exception.ThrowUtils;
 import com.leezw.springbootinit.mapper.StudentMapper;
@@ -23,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -196,6 +201,13 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         studentAddRequest.setCreatetime(LocalDateTime.now());
         studentMapper.insert(studentAddRequest);
+    }
+
+    @Override
+    public void importExcel(MultipartFile file) throws IOException {
+        EasyExcel.read(file.getInputStream(), StudentExcel.class, new StudentExcelListener(studentMapper))
+                .sheet()
+                .doRead();
     }
 
 }
