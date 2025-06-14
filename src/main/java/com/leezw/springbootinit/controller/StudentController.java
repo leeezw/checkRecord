@@ -197,19 +197,12 @@ public class StudentController {
      * @param request
      * @return
      */
-    @PostMapping("/edit")
-    public BaseResponse<Boolean> editStudent(@RequestBody StudentEditRequest studentEditRequest, HttpServletRequest request) {
-        if (studentEditRequest == null || studentEditRequest.getId() <= 0) {
+    @PostMapping("/edit/{id}")
+    public BaseResponse<Boolean> editStudent(@PathVariable Long id,@RequestBody Student studentEditRequest, HttpServletRequest request) {
+        if (studentEditRequest == null || id <= 0L) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        // todo 在此处将实体类和 DTO 进行转换
-        Student student = new Student();
-        BeanUtils.copyProperties(studentEditRequest, student);
-        // 数据校验
-        studentService.validStudent(student, false);
         User loginUser = userService.getLoginUser(request);
-        // 判断是否存在
-        long id = studentEditRequest.getId();
         Student oldStudent = studentService.getById(id);
         ThrowUtils.throwIf(oldStudent == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可编辑
@@ -217,7 +210,8 @@ public class StudentController {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 操作数据库
-        boolean result = studentService.updateById(student);
+        studentEditRequest.setId(id);
+        boolean result = studentService.updateById(studentEditRequest);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }

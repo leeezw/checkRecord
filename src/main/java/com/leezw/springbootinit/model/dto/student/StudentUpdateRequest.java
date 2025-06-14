@@ -15,5 +15,6 @@ import java.util.List;
 @Data
 public class StudentUpdateRequest extends Student implements Serializable  {
 
+    private List<Integer> ids;
 
 }
