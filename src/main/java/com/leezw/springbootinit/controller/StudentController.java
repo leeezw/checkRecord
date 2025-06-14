@@ -179,7 +179,6 @@ public class StudentController {
         ThrowUtils.throwIf(studentQueryRequest == null, ErrorCode.PARAMS_ERROR);
         // 补充查询条件，只查询当前登录用户的数据
         User loginUser = userService.getLoginUser(request);
-        studentQueryRequest.setUserId(loginUser.getId());
         long current = studentQueryRequest.getCurrent();
         long size = studentQueryRequest.getPageSize();
         // 限制爬虫

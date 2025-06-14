@@ -22,35 +22,34 @@ public class StudentQueryRequest extends PageRequest implements Serializable {
      */
     private Long id;
 
-    /**
-     * id
-     */
-    private Long notId;
 
     /**
      * 搜索词
      */
     private String searchText;
 
-    /**
-     * 标题
-     */
-    private String title;
 
     /**
-     * 内容
+     * 身份证号
      */
-    private String content;
+    private String userid;
 
     /**
-     * 标签列表
+     * 学籍卡号
      */
-    private List<String> tags;
+    private String stuid;
 
     /**
-     * 创建用户 id
+     * 手机号
      */
-    private Long userId;
+    private String userphone;
+
+
+    /**
+     * 用户名
+     */
+    private String username;
+
 
     private static final long serialVersionUID = 1L;
 }
