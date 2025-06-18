@@ -1,5 +1,6 @@
 package com.leezw.springbootinit.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.leezw.springbootinit.annotation.AuthCheck;
@@ -218,6 +219,11 @@ public class StudentController {
         if(exist){
             throw new BusinessException(ErrorCode.STUDENT_IS_EXIST);
         }
+        LambdaQueryWrapper<Student> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Student::getStuid, studentEditRequest.getStuid());
+        if(studentMapper.exists(lambdaQueryWrapper)){
+            throw new BusinessException(ErrorCode.STUDENT_ID_IS_EXIST);
+        }
         // 仅本人或管理员可编辑
         if (!oldStudent.getUserid().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
@@ -236,4 +242,6 @@ public class StudentController {
         studentService.importExcel(file);
         return ResultUtils.success("导入成功");
     }
+
+
 }

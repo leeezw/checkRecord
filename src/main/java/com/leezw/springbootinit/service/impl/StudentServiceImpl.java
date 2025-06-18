@@ -202,6 +202,11 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         if(exist){
             throw new BusinessException(ErrorCode.STUDENT_IS_EXIST);
         }
+        LambdaQueryWrapper<Student> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Student::getStuid, studentAddRequest.getStuid());
+        if(studentMapper.exists(lambdaQueryWrapper)){
+            throw new BusinessException(ErrorCode.STUDENT_ID_IS_EXIST);
+        }
         studentAddRequest.setCreatetime(LocalDateTime.now());
         studentMapper.insert(studentAddRequest);
     }

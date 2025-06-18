@@ -15,7 +15,9 @@ public enum ErrorCode {
     SYSTEM_ERROR(50000, "系统内部异常"),
     OPERATION_ERROR(50001, "操作失败"),
 
-    STUDENT_IS_EXIST(1001,"该身份账号已经存在" );
+    STUDENT_IS_EXIST(1001,"该身份账号已经存在" ),
+
+    STUDENT_ID_IS_EXIST(1002, "该学籍卡号已经存在" );
 
     /**
      * 状态码
