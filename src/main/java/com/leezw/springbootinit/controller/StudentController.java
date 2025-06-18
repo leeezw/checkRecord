@@ -1,5 +1,6 @@
 package com.leezw.springbootinit.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.leezw.springbootinit.annotation.AuthCheck;
 import com.leezw.springbootinit.common.BaseResponse;
@@ -9,6 +10,7 @@ import com.leezw.springbootinit.common.ResultUtils;
 import com.leezw.springbootinit.constant.UserConstant;
 import com.leezw.springbootinit.exception.BusinessException;
 import com.leezw.springbootinit.exception.ThrowUtils;
+import com.leezw.springbootinit.mapper.StudentMapper;
 import com.leezw.springbootinit.model.dto.student.StudentAddRequest;
 import com.leezw.springbootinit.model.dto.student.StudentEditRequest;
 import com.leezw.springbootinit.model.dto.student.StudentQueryRequest;
@@ -40,6 +42,9 @@ public class StudentController {
 
     @Resource
     private StudentService studentService;
+
+    @Resource
+    private StudentMapper studentMapper;
 
     @Resource
     private UserService userService;
@@ -207,6 +212,12 @@ public class StudentController {
         User loginUser = userService.getLoginUser(request);
         Student oldStudent = studentService.getById(id);
         ThrowUtils.throwIf(oldStudent == null, ErrorCode.NOT_FOUND_ERROR);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("userid", studentEditRequest.getUserid());
+        boolean exist = studentMapper.exists(queryWrapper);
+        if(exist){
+            throw new BusinessException(ErrorCode.STUDENT_IS_EXIST);
+        }
         // 仅本人或管理员可编辑
         if (!oldStudent.getUserid().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);

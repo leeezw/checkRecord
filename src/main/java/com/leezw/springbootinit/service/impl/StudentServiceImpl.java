@@ -196,8 +196,10 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
 
     @Override
     public void addStudent(Student studentAddRequest) {
-        Student exist = studentMapper.selectOne(new LambdaQueryWrapper<Student>().eq(Student::getUsername, studentAddRequest.getUsername()));
-        if(Objects.nonNull(exist)){
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("userid", studentAddRequest.getUserid());
+        boolean exist = studentMapper.exists(queryWrapper);
+        if(exist){
             throw new BusinessException(ErrorCode.STUDENT_IS_EXIST);
         }
         studentAddRequest.setCreatetime(LocalDateTime.now());
