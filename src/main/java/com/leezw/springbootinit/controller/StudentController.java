@@ -215,17 +215,6 @@ public class StudentController {
         User loginUser = userService.getLoginUser(request);
         Student oldStudent = studentService.getById(id);
         ThrowUtils.throwIf(oldStudent == null, ErrorCode.NOT_FOUND_ERROR);
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("userid", studentEditRequest.getUserid());
-        boolean exist = studentMapper.exists(queryWrapper);
-        if(exist){
-            throw new BusinessException(ErrorCode.STUDENT_IS_EXIST);
-        }
-        LambdaQueryWrapper<Student> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(Student::getStuid, studentEditRequest.getStuid());
-        if(studentMapper.exists(lambdaQueryWrapper)){
-            throw new BusinessException(ErrorCode.STUDENT_ID_IS_EXIST);
-        }
         // 仅本人或管理员可编辑
         if (!oldStudent.getUserid().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
