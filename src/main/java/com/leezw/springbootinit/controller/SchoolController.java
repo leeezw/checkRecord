@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/school")
 @Slf4j
 public class SchoolController {
 

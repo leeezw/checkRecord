@@ -95,7 +95,7 @@ public class Student implements Serializable {
 
     /**
     * 检查日期
-    */
+     */
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private LocalDate checkday;
 
