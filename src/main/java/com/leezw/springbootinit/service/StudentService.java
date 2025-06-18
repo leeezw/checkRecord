@@ -10,7 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 用户文件服务
@@ -57,4 +59,6 @@ public interface StudentService extends IService<Student> {
     void addStudent(Student studentAddRequest);
 
     void importExcel(MultipartFile file) throws IOException;
+
+    void listExport(List<Long> id, HttpServletResponse response) throws IOException;
 }

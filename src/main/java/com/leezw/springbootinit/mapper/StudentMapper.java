@@ -2,6 +2,7 @@ package com.leezw.springbootinit.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.leezw.springbootinit.excel.StudentExcel;
+import com.leezw.springbootinit.excel.StudentVoExcel;
 import com.leezw.springbootinit.model.entity.Student;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -69,4 +70,6 @@ public interface StudentMapper extends BaseMapper<Student> {
     int countAll(Student queryParamDTO);
 
     void batchInsert(@Param("list") List<StudentExcel> batchList);
+
+    List<StudentVoExcel> exportPage(@Param("id") List<Long> id);
 }

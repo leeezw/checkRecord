@@ -1,9 +1,12 @@
 package com.leezw.springbootinit.service.impl;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,6 +15,7 @@ import com.leezw.springbootinit.common.ErrorCode;
 import com.leezw.springbootinit.constant.CommonConstant;
 import com.leezw.springbootinit.excel.ExcelListener.StudentExcelListener;
 import com.leezw.springbootinit.excel.StudentExcel;
+import com.leezw.springbootinit.excel.StudentVoExcel;
 import com.leezw.springbootinit.exception.BusinessException;
 import com.leezw.springbootinit.exception.ThrowUtils;
 import com.leezw.springbootinit.mapper.StudentMapper;
@@ -31,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -218,4 +223,93 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
                 .doRead();
     }
 
+    @Override
+    public void listExport(List<Long> id, HttpServletResponse response) throws IOException {
+        try {
+            String fileName = "个人基本情况表.xlsx";
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setCharacterEncoding("utf-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+
+            List<StudentVoExcel> dataList = studentMapper.exportPage(id);
+           for (StudentVoExcel item : dataList) {
+                item.setUserprofileText(convertUserProfileToText(item.getUserprofile()));
+//                System.out.println(item);
+            }
+
+            EasyExcel.write(response.getOutputStream(), StudentVoExcel.class)
+                    .sheet("个人基本情况")
+                    .doWrite(dataList);
+
+        } catch (Exception e) {
+            log.error("导出异常：", e);
+            // 终止方法，不能写回任何字符内容！
+        }
+    }
+
+    public String convertUserProfileToText(String json) {
+        if (json == null || json.trim().isEmpty()) return "";
+
+        try {
+            JSONObject obj = JSONObject.parseObject(json);
+            StringBuilder sb = new StringBuilder();
+
+            if (obj.containsKey("general_check")) {
+                JSONObject generalCheck = obj.getJSONObject("general_check");
+                sb.append("一般检查: ").append(generalCheck.getJSONArray("result").toJSONString()).append("\n");
+            }
+
+            if (obj.containsKey("forward_bending_test")) {
+                JSONObject bend = obj.getJSONObject("forward_bending_test");
+                sb.append("前屈试验:\n");
+                JSONObject thoracic = bend.getJSONObject("thoracic_section");
+                JSONObject thoracolumbar = bend.getJSONObject("thoracolumbar_section");
+                JSONObject lumbar = bend.getJSONObject("lumbar_section");
+
+                sb.append(" - 胸段: ").append(thoracic.getString("result")).append(" ATR: ").append(thoracic.getString("atr_value")).append("\n");
+                sb.append(" - 胸腰段: ").append(thoracolumbar.getString("result")).append(" ATR: ").append(thoracolumbar.getString("atr_value")).append("\n");
+                sb.append(" - 腰段: ").append(lumbar.getString("result")).append(" ATR: ").append(lumbar.getString("atr_value")).append("\n");
+            }
+
+            if (obj.containsKey("spine_motion_test")) {
+                JSONObject motion = obj.getJSONObject("spine_motion_test");
+                sb.append("脊柱活动度测试: \n");
+                sb.append(" - 是否检查: ").append(motion.getString("performed")).append("\n");
+                sb.append(" - 胸段 ATR: ").append(motion.getString("thoracic_atr")).append("\n");
+                sb.append(" - 胸腰段 ATR: ").append(motion.getString("thoracolumbar_atr")).append("\n");
+                sb.append(" - 腰段 ATR: ").append(motion.getString("lumbar_atr")).append("\n");
+            }
+
+            if (obj.containsKey("anterior_posterior_check")) {
+                JSONObject apCheck = obj.getJSONObject("anterior_posterior_check");
+                sb.append("前后观检查: ").append(apCheck.getJSONArray("general_result").toJSONString()).append("\n");
+                sb.append(" - 俯卧检查: ").append(apCheck.getJSONArray("prone_test_result").toJSONString()).append("\n");
+            }
+
+            if (obj.containsKey("medical_history")) {
+                sb.append("病史: ").append(obj.getJSONArray("medical_history").toJSONString()).append("\n");
+            }
+
+            if (obj.containsKey("bad_posture")) {
+                sb.append("不良姿势: ").append(obj.getJSONArray("bad_posture").toJSONString()).append("\n");
+            }
+
+            if (obj.containsKey("other_special_situation")) {
+                sb.append("其他情况: ").append(obj.getString("other_special_situation")).append("\n");
+            }
+
+            if (obj.containsKey("screening_result")) {
+                JSONObject result = obj.getJSONObject("screening_result");
+                sb.append("筛查结果: ").append(result.getJSONArray("results").toJSONString()).append("\n");
+            }
+
+            if (obj.containsKey("suggestion")) {
+                sb.append("建议: ").append(obj.getString("suggestion")).append("\n");
+            }
+
+            return sb.toString().trim();
+        } catch (Exception e) {
+            return "【数据解析失败】";
+        }
+    }
 }

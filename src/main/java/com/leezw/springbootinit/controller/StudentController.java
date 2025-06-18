@@ -28,7 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 用户文件接口
@@ -242,6 +244,12 @@ public class StudentController {
         studentService.importExcel(file);
         return ResultUtils.success("导入成功");
     }
+
+    @PostMapping("/export")
+    public void export(@RequestBody List<Long> id, HttpServletResponse response) throws IOException {
+        studentService.listExport(id,response);
+    }
+
 
 
 }
