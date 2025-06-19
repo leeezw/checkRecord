@@ -71,5 +71,5 @@ public interface StudentMapper extends BaseMapper<Student> {
 
     void batchInsert(@Param("list") List<StudentExcel> batchList);
 
-    List<StudentVoExcel> exportPage(@Param("id") List<Long> id);
+    List<StudentVoExcel> exportPage(@Param("name") String name);
 }

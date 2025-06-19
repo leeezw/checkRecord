@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Data
 @ColumnWidth(20)
-public class StudentVoExcel extends StudentExcel {
+public class StudentVoExcel {
 
 
     /**
@@ -88,7 +88,42 @@ public class StudentVoExcel extends StudentExcel {
     @ExcelIgnore
     private String userprofile; // 原始 JSON 数据
 
-    @ExcelProperty(value = "脊柱弯曲异常记录筛查表", index = 11)
-    private String userprofileText; // 供导出使用
+
+    @ExcelProperty(value = "一般检查",index = 11)
+    private String spineScoliosisGeneralCheck;
+
+    @ExcelProperty(value = "胸段",index = 12)
+    private String spineScoliosisThoracicSection;
+
+    @ExcelProperty(value = "腰胸段",index = 13)
+    private String spineScoliosisThoracolumbarSection;
+
+    @ExcelProperty(value = "腰段",index = 14)
+    private String spineScoliosisLumbarSection;
+
+    @ExcelProperty(value = "是否进行脊柱运动实验",index = 15)
+    private String isSpineScoliosisExerciseExperiment;
+
+    @ExcelProperty(value = "一般检查",index = 16)
+    private String spineCheck;
+
+    @ExcelProperty(value = "俯卧试验",index = 17)
+    private String spineProneTest;
+
+    @ExcelProperty(value = "病史",index = 18)
+    private String spineHistory;
+
+    @ExcelProperty(value = "常见不良体态筛查",index = 19)
+    private String commonPoorPostureScreening;
+
+    @ExcelProperty(value = "其他特殊情况",index = 20)
+    private String otherSpecialCircumstances;
+
+    @ExcelProperty(value = "筛查结果",index = 21)
+    private String screeningResult;
+
+    @ExcelProperty(value = "建议",index = 22)
+    private String suggestion;
+
 
 }

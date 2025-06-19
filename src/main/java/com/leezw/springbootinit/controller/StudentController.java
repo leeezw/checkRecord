@@ -234,9 +234,9 @@ public class StudentController {
         return ResultUtils.success("导入成功");
     }
 
-    @PostMapping("/export")
-    public void export(@RequestBody List<Long> id, HttpServletResponse response) throws IOException {
-        studentService.listExport(id,response);
+    @GetMapping("/export")
+    public void export(@RequestParam String name, HttpServletResponse response) throws IOException {
+        studentService.listExport(name,response);
     }
 
 

@@ -19,15 +19,11 @@
         </foreach>
     </insert>
 
-    <select id="exportPage" resultType="com.leezw.springbootinit.excel.StudentVoExcel"
-            parameterType="java.lang.Long">
+    <select id="exportPage" resultType="com.leezw.springbootinit.excel.StudentVoExcel">
         select * from student
         <where>
-            <if test="id != null and id.size() > 0">
-                AND id IN
-                <foreach collection="id" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
+            <if test="name != null and name != ''">
+                schoolName = #{name}
             </if>
         </where>
 

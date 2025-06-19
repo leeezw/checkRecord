@@ -60,5 +60,5 @@ public interface StudentService extends IService<Student> {
 
     void importExcel(MultipartFile file) throws IOException;
 
-    void listExport(List<Long> id, HttpServletResponse response) throws IOException;
+    void listExport(String name, HttpServletResponse response) throws IOException;
 }
