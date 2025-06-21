@@ -21,4 +21,22 @@
         userName,userAvatar,userProfile,
         userRole,createTime,updateTime,isDelete
     </sql>
+
+    <update id="update" parameterType="com.leezw.springbootinit.model.entity.User">
+        UPDATE user
+        <set>
+            <if test="null != userAccount and '' != userAccount">userAccount = #{userAccount},</if>
+            <if test="null != userPassword and '' != userPassword">userPassword = #{userPassword},</if>
+            <if test="null != unionId and '' != unionId">unionId = #{unionId},</if>
+            <if test="null != mpOpenId and '' != mpOpenId">mpOpenId = #{mpOpenId},</if>
+            <if test="null != userName and '' != userName">userName = #{userName},</if>
+            <if test="null != userAvatar and '' != userAvatar">userAvatar = #{userAvatar},</if>
+            <if test="null != userProfile and '' != userProfile">userProfile = #{userProfile},</if>
+            <if test="null != userRole and '' != userRole">userRole = #{userRole},</if>
+            <if test="null != createTime ">createTime = #{createTime},</if>
+            <if test="null != updateTime ">updateTime = #{updateTime},</if>
+            <if test="null != isDelete ">isDelete = #{isDelete}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
 </mapper>

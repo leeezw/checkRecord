@@ -9,6 +9,14 @@ import com.leezw.springbootinit.model.entity.User;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+    /**
+     * 更新
+     * @author verytools
+     * @date 2025/06/21
+     **/
+    int update(User user);
+
+
 }
 
 

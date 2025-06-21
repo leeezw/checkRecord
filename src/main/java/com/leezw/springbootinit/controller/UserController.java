@@ -1,5 +1,6 @@
 package com.leezw.springbootinit.controller;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.leezw.springbootinit.annotation.AuthCheck;
 import com.leezw.springbootinit.common.BaseResponse;
@@ -10,6 +11,7 @@ import com.leezw.springbootinit.config.WxOpenConfig;
 import com.leezw.springbootinit.constant.UserConstant;
 import com.leezw.springbootinit.exception.BusinessException;
 import com.leezw.springbootinit.exception.ThrowUtils;
+import com.leezw.springbootinit.mapper.UserMapper;
 import com.leezw.springbootinit.model.dto.user.UserAddRequest;
 import com.leezw.springbootinit.model.dto.user.UserLoginRequest;
 import com.leezw.springbootinit.model.dto.user.UserQueryRequest;
@@ -53,6 +55,8 @@ public class UserController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private UserMapper userMapper;
 
     @Resource
     private WxOpenConfig wxOpenConfig;
@@ -171,7 +175,7 @@ public class UserController {
         User user = new User();
         BeanUtils.copyProperties(userAddRequest, user);
         // 默认密码 12345678
-        String defaultPassword = "12345678";
+        String defaultPassword = userAddRequest.getUserPassword();
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + defaultPassword).getBytes());
         user.setUserPassword(encryptPassword);
         boolean result = userService.save(user);
@@ -212,8 +216,11 @@ public class UserController {
         }
         User user = new User();
         BeanUtils.copyProperties(userUpdateRequest, user);
-        boolean result = userService.updateById(user);
-        ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
+        String defaultPassword = userUpdateRequest.getUserPassword();
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + defaultPassword).getBytes());
+        user.setUserPassword(encryptPassword);
+        int result = userMapper.update(user);
+        ThrowUtils.throwIf(result != 1, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(true);
     }
 
