@@ -6,9 +6,9 @@ spring:
   # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://113.44.75.36:3306/secondsales?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
-    username: secondsales
-    password: 123456
+    url: jdbc:mysql://113.44.75.36:3306/MGSjAHym4wsCEPys?useSSL=true&requireSSL=true&verifyServerCertificate=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: next
+    password: MGSjAHym4wsCEPys
   # Redis 配置
   # todo 需替换配置
   redis:
